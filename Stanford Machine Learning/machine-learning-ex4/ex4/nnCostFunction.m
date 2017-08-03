@@ -62,30 +62,61 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+% part 1 feedforard
+x0 = ones(m,1);
+a1 = [x0 X];
+z2 = Theta1 * a1';
+a2 = sigmoid(z2);
+a2 = [x0 a2'];
+z3 = Theta2 * a2';
+a3= sigmoid(z3);
+a3 = a3';
+costSum = 0;
+z2=z2';
+for i=1:m
+    yi = zeros(num_labels,1);
+    yi(y(i)) = 1;
+    for k=1:num_labels
+        costSum = costSum + yi(k)*log(a3(i,k)) + (1-yi(k))*log(1-a3(i,k));
+    end
+    % backpropagation
+    d3 = a3(i,:) - yi';
+    d2 = (d3*Theta2);
+    d2 = d2(2:end);
+    d2 = d2 .* sigmoidGradient(z2(i,:));
+    Theta1_grad = Theta1_grad + d2'*a1(i,:);
+    Theta2_grad = Theta2_grad + d3'*a2(i,:);
+end
+Layer1 = Theta1(:,2:end);
+L1Sum = sum(sum(Layer1.^2));
+Layer2 = Theta2(:,2:end);
+L2Sum=sum(sum(Layer2.^2));
+J = (-1/m)*costSum+(lambda/(2*m))*(L1Sum+L2Sum);
+% part 2 backpropagation
+Theta1_grad = Theta1_grad/m;
+Theta2_grad = Theta2_grad/m;
 % -------------------------------------------------------------
-
+% part 3 regularization
+[r1,c1]=size(Theta1_grad);
+[r2,c2]=size(Theta2_grad);
+for i=1:r1
+    for j=1:c1
+        if(j-1>0)
+            Theta1_grad(i,j) = Theta1_grad(i,j) + (lambda/m)*Theta1(i,j);
+        end
+    end
+end
+for i=1:r2
+    for j=1:c2
+        if(j-1>0)
+            Theta2_grad(i,j) = Theta2_grad(i,j) + (lambda/m)*Theta2(i,j);
+        end
+    end
+end
 % =========================================================================
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
+save('nndata')
 
 end
