@@ -4,10 +4,7 @@
 %  Instructions
 %  ------------
 %
-%  This file contains code that helps you get started on the
-%  exercise. You will need to complete the following functions:
-%
-%     estimateGaussian.m
+%  This file .m
 %     selectThreshold.m
 %     cofiCostFunc.m
 %
